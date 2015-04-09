@@ -11,16 +11,11 @@ plane::plane(const vec &point, const vec &normal)
 {
 }
 
-ray_intersection plane::cast_ray(const ray &viewer) const
+ray_intersection plane::cast_ray(const ray &r) const
 {
-	ray_intersection sol;
+	double distance = dot(normal, point - r.get_point())
+                           / dot(normal, r.get_slope());
+	ray_intersection ri(normal, r, distance, this);
 
-    sol.distance = dot(normal, point - viewer.get_point())
-                   / dot(normal, viewer.get_slope());
-    sol.source_ray = viewer;
-    sol.to_render    = this;
-    sol.normal       = normal;
-    sol.point        = viewer.calculate(sol.distance);
-
-    return sol;
+    return ri;
 }

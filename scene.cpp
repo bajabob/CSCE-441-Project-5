@@ -102,11 +102,11 @@ priority_queue<ray_intersection> scene::get_ray_intersections(const ray &r) cons
     // go through the list of rendering objects
     for(int i = 0; i < renderables.size(); ++i)
     {
-    	ray_intersection inters = renderables.at(i)->cast_ray(r);
+    	ray_intersection intersection = renderables.at(i)->cast_ray(r);
 
     	// only add as an intersection IF less than the max render distance
-    	if(inters.distance < MAX_RENDER_DISTANCE && inters.distance > 0){
-    		pq.push(inters);
+    	if(intersection.get_distance() < MAX_RENDER_DISTANCE && intersection.get_distance() > 0){
+    		pq.push(intersection);
     	}
     }
 
