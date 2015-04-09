@@ -83,7 +83,7 @@ void scene::render( float (&framebuffer)[HEIGHT][WIDTH][3])
         	ray r(camera_center, (comp / norm(comp, 2)));
 
         	// get all colors of the discovered ray intersections
-            fvec points = get_intersection_color(get_ray_intersections(r), 10);
+            fvec points = get_intersection_color(get_ray_intersections(r));
 
             // assign discovered intersection colors
             framebuffer[y][x][0] = points(0);
@@ -100,11 +100,11 @@ priority_queue<ray_intersection> scene::get_ray_intersections(const ray &r) cons
     priority_queue<ray_intersection> pq;
 
     // go through the list of rendering objects
-    for(int i = 0; i < renderables.size(); ++i)
+    for(int i = 0; i < surfaces.size(); ++i)
     {
-    	ray_intersection intersection = renderables.at(i)->cast_ray(r);
+    	ray_intersection intersection = surfaces.at(i)->cast_ray(r);
 
-    	// only add as an intersection IF less than the max render distance
+    	// only add as an intersection IF less than the MAX render distance
     	if(intersection.get_distance() < MAX_RENDER_DISTANCE && intersection.get_distance() > 0){
     		pq.push(intersection);
     	}
@@ -120,8 +120,7 @@ priority_queue<ray_intersection> scene::get_ray_intersections(const ray &r) cons
     return (priority_queue<ray_intersection>(pq));
 }
 
-fvec scene::get_intersection_color(const priority_queue<ray_intersection> &pq,
-                                int depth) const
+fvec scene::get_intersection_color(const priority_queue<ray_intersection> &pq) const
 {
 
 	// no intersection found, report back the default background color
@@ -130,5 +129,101 @@ fvec scene::get_intersection_color(const priority_queue<ray_intersection> &pq,
 		return BACKGROUND;
 	}
 
-    return fvec("1 0 0 1");
+	priority_queue<ray_intersection> rays(pq);
+
+	int total_rays = rays.size();
+
+	fvec surface_color;
+	surface_color.zeros(4);
+
+	// add up all the colors from the various intersections
+	while(!rays.empty())
+	{
+		ray_intersection r = rays.top();
+		surface_color += (get_surface_color(r));
+		rays.pop();
+	}
+
+	// take average of all colors
+	surface_color /= (double) total_rays;
+
+    return surface_color;
+}
+
+
+fvec scene::get_surface_color(const ray_intersection &r) const
+   {
+       fvec surface_color(4);
+       surface_color(0) = r.to_render->get_color()(0)*0.2;
+       surface_color(1) = r.to_render->get_color()(1)*0.2;
+       surface_color(2) = r.to_render->get_color()(2)*0.2;
+       surface_color(3) = 1.0;
+
+       for(int i = 0; i < lights.size(); i++)
+       {
+
+       	double distance = norm(lights.at(i)->get_position() - r.get_point(), 2);
+
+       	fvec intensity(r.to_render->get_color());
+
+       	if(distance < 15.0){
+       		intensity = 225.0 * r.to_render->get_color() / pow(distance, 2);
+       	}
+
+       	vec direction(lights.at(i)->get_position() - r.get_point());
+       	vec direction_light_source(direction / norm(direction, 2));
+       	double distance_to_light = norm(lights.at(i)->get_position() - r.get_point(), 2);
+
+       	ray ray_to_light(r.get_point() + r.get_normal() * 0.05, direction_light_source);
+       	priority_queue<ray_intersection> shad_cast = get_ray_intersections(ray_to_light);
+
+       	bool has_shadow = false;
+       	if(!shad_cast.empty() && shad_cast.top().get_distance() < distance_to_light){
+       		has_shadow = true;
+       	}
+
+       	double dot_ln = dot(direction_light_source, r.get_normal());
+
+       	vec reflected = 2*dot_ln*r.get_normal() - direction_light_source;
+
+			double dot_rv = dot(reflected, r.get_source_ray().get_slope());
+
+
+			// If the light is in front of the surface, apply lighting
+			if(dot_ln >= 0.0 && !has_shadow)
+			{
+				for(int channel = 0; channel < 3; channel++)
+				{
+					// Add in diffuse term
+					surface_color(channel)
+						+= r.to_render->get_color()(channel)*dot_ln*intensity(channel);
+
+					// Add in specular term
+					if(dot_rv >= 0.0)
+					{
+						surface_color(channel)
+							+= r.to_render->get_specular()(channel)
+							* pow(dot_rv, r.to_render->get_specular_exponent())
+							* intensity(channel);
+					}
+				}
+			}
+       }
+
+       return surface_color;
+
+   }
+
+void scene::add_surface(surface* s)
+{
+	this->surfaces.push_back(s);
+}
+
+void scene::add_light(light* l)
+{
+	this->lights.push_back(l);
+}
+
+vector<light*> scene::get_lights() const{
+	return this->lights;
 }

@@ -4,13 +4,17 @@
 
 #include <armadillo>
 using arma::vec;
+using arma::norm;
 
-#include "renderable.h"
+#include "surface.h"
 
-class plane : public renderable
+class plane : public surface
 {
 public:
-	plane(const vec &point, const vec& normal);
+	plane(const vec &point, const vec& normal,
+			const fvec &c, const fvec &s, const double &se,
+			const double &reflect, const double &refract,
+			const double &snell);
 
     virtual ray_intersection cast_ray(const ray &viewer) const;
 

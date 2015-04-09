@@ -12,10 +12,11 @@ using std::endl;
 #include <armadillo>
 using arma::vec;
 
-#include "config.h"
 #include "ray.h"
 #include "scene.h"
 #include "plane.h"
+#include "sphere.h"
+#include "config.h"
 
 int window;
 
@@ -46,14 +47,31 @@ void onRenderSceneOne()
 
 	cout << "Rendering Scene 1... " << endl;
 
-	scene s(vec("-20 0 5"));
+	scene scene(vec("-18 0 3"));
 
-	// create a plane
-	plane p(vec("0 0 0"), vec("0 0 1"));
+	// lights
+	light light(	vec("5 3 20"),
+					fvec("1 1 1"));
+	scene.add_light(&light);
 
-	s.renderables.push_back(&p);
+	// plane
+	plane plane(	vec("0 0 -5"),
+					vec("0 0 1"),
+					fvec("0.7 0.3 0.1"),
+					fvec("0.2 0.7 0.1"),
+					12.0, 0.0, 0.0, 3.0);
+	scene.add_surface(&plane);
 
-	s.render(framebuffer);
+	// spheres
+	sphere sphere(	vec("0 0 0"),
+					1.0,
+					fvec("0.1 0.8 0.1"),
+					fvec("0.2 0.7 0.1"),
+					12.0, 0.0, 0.0, 3.0);
+
+	scene.add_surface(&sphere);
+
+	scene.render(framebuffer);
 
     glutPostRedisplay();
 }

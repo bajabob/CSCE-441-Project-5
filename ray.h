@@ -4,6 +4,7 @@
 
 #include <armadillo>
 using arma::vec;
+using arma::dot;
 
 class ray
 {
@@ -24,6 +25,19 @@ public:
     vec get_slope() const{
     	return slope;
     }
+
+    double dot_point() const{
+    	return dot(point, point);
+    }
+
+    double dot_slope() const{
+    	return dot(slope, slope);
+    }
+
+    double dot_point_slope() const{
+    	return dot(point, slope);
+    }
+
 
 private:
     vec point;

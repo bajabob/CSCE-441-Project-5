@@ -1,18 +1,27 @@
-
-#include <armadillo>
-using arma::norm;
-
 #include "plane.h"
 
-plane::plane(const vec &point, const vec &normal)
-:
+plane::plane(const vec &point,
+			const vec &normal,
+			const fvec &c,
+			const fvec &s,
+			const double &se,
+			const double &reflect,
+			const double &refract,
+			const double &snell)
+: 	surface(c, s, se, reflect, refract, snell),
     point(point),
 	normal(normal / norm(normal, 2))
-{
-}
+{}
 
 ray_intersection plane::cast_ray(const ray &r) const
 {
+
+	/**
+	 * Planes go on forever, therefore there will
+	 * 	always be an intersection. We will use the
+	 * 	Config.MAX_RENDER_DISTANCE to trim plane's
+	 * 	extending too far into the distance
+	 */
 	double distance = dot(normal, point - r.get_point())
                            / dot(normal, r.get_slope());
 	ray_intersection ri(normal, r, distance, this);

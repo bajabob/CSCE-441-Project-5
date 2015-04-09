@@ -25,7 +25,9 @@ set(CMAKE_CXX_FLAGS "-Wall --pedantic -O3")
 
 add_executable (main main.cpp
 			 scene.cpp
-			 plane.cpp)
+			 plane.cpp
+			 sphere.cpp
+			 )
 target_link_libraries (main ${OPENGL_LIBRARIES}
                                 ${GLUT_LIBRARIES}
                                 ${ARMADILLO_LIBRARIES})
