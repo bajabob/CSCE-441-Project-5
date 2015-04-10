@@ -10,7 +10,7 @@ plane::plane(const vec &point,
 	normal(normal / norm(normal, 2))
 {}
 
-ray_intersection plane::cast_ray(const ray &r) const
+ray_intersection plane::shoot_ray(const ray &r) const
 {
 
 	/**

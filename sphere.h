@@ -20,7 +20,7 @@ public:
 	sphere(const vec &position, const double &radius,
 			const fvec &c, const fvec &s, const double &se);
 
-	virtual ray_intersection cast_ray(const ray &viewer) const;
+	virtual ray_intersection shoot_ray(const ray &viewer) const;
 
 private:
 

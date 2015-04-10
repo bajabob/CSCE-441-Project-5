@@ -92,10 +92,11 @@ priority_queue<ray_intersection> scene::get_ray_intersections( const ray &r ) co
 
 	// go through the list of rendering objects
 	for ( int i = 0; i < surfaces.size(); ++i ) {
-		ray_intersection intersection = surfaces.at( i )->cast_ray( r );
+		ray_intersection intersection = surfaces.at( i )->shoot_ray( r );
 
 		// only add as an intersection IF less than the MAX render distance
-		if (intersection.get_distance() > 0 ) {
+		if ( intersection.get_distance() < MAX_RENDER_DISTANCE
+				&& intersection.get_distance() > 0 ) {
 			pq.push( intersection );
 		}
 	}
@@ -138,9 +139,9 @@ fvec scene::get_intersection_color(
 
 fvec scene::get_surface_color( const ray_intersection &r ) const {
 	fvec surface_color( 4 );
-	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.3;
-	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.3;
-	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.3;
+	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.01;
+	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.01;
+	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.01;
 	surface_color( 3 ) = 1.0;
 
 	fvec intensity( r.to_render->get_color() );
@@ -188,6 +189,7 @@ fvec scene::get_surface_color( const ray_intersection &r ) const {
 
 			}
 		}
+
 	}
 
 	return surface_color;

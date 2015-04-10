@@ -37,7 +37,7 @@ public:
 	 * 	implement this function to calculate it's intersection
 	 * 	with some casted ray
 	 */
-    virtual ray_intersection cast_ray(const ray &r) const = 0;
+    virtual ray_intersection shoot_ray(const ray &r) const = 0;
 
     fvec get_color() const{
     	return this->color;

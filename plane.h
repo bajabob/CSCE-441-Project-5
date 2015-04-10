@@ -14,7 +14,7 @@ public:
 	plane(const vec &point, const vec& normal,
 			const fvec &c, const fvec &s, const double &se);
 
-    virtual ray_intersection cast_ray(const ray &viewer) const;
+    virtual ray_intersection shoot_ray(const ray &viewer) const;
 
 private:
     vec point;
