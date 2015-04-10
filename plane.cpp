@@ -4,8 +4,9 @@ plane::plane(const vec &point,
 			const vec &normal,
 			const fvec &c,
 			const fvec &s,
-			const double &se)
-: 	surface(c, s, se),
+			const double &se,
+			const double &d)
+: 	surface(c, s, se, d),
     point(point),
 	normal(normal / norm(normal, 2))
 {}

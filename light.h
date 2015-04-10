@@ -8,8 +8,8 @@ using arma::fvec;
 class light{
 
 public:
-	light(const vec &position, const fvec &color)
-	: position(position), color(color)
+	light(const vec &position, const fvec &color, const double &diffuse)
+	: position(position), color(color), diffuse(diffuse)
 	{}
 
 	vec get_position() const{
@@ -20,10 +20,15 @@ public:
 		return color;
 	}
 
+	double get_diffuse() const{
+		return diffuse;
+	}
+
 private:
 
 	vec position;
 	fvec color;
+	double diffuse;
 
 };
 

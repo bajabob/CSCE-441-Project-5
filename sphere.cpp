@@ -4,8 +4,9 @@ sphere::sphere(	const vec &position,
 				const double &radius,
 				const fvec &c,
 				const fvec &s,
-				const double &se)
-:	surface(c, s, se),
+				const double &se,
+				const double &d)
+:	surface(c, s, se, d),
 	position(position),
 	radius(radius)
 {}

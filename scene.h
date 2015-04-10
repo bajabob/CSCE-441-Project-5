@@ -16,6 +16,8 @@ using std::set;
 #include <vector>
 using std::vector;
 
+using std::max;
+
 class scene;
 
 #include "light.h"

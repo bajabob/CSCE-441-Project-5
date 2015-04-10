@@ -26,10 +26,12 @@ public:
 
 	surface(const fvec &color,
 			const fvec &specular,
-			const double &specular_exponent):
+			const double &specular_exponent,
+			const double &diffuse):
 				color(color),
 				specular(specular),
-				specular_exponent(specular_exponent)
+				specular_exponent(specular_exponent),
+				diffuse(diffuse)
 	{}
 
 	/**
@@ -47,6 +49,10 @@ public:
     	return this->specular;
     }
 
+    double get_diffuse() const{
+    	return this->diffuse;
+    }
+
     double get_specular_exponent() const{
     	return this->specular_exponent;
     }
@@ -56,6 +62,7 @@ private:
     fvec color;
     fvec specular;
     double specular_exponent;
+    double diffuse;
 
 };
 

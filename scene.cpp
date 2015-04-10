@@ -95,8 +95,7 @@ priority_queue<ray_intersection> scene::get_ray_intersections( const ray &r ) co
 		ray_intersection intersection = surfaces.at( i )->shoot_ray( r );
 
 		// only add as an intersection IF less than the MAX render distance
-		if ( intersection.get_distance() < MAX_RENDER_DISTANCE
-				&& intersection.get_distance() > 0 ) {
+		if (  intersection.get_distance() > 0 ) {
 			pq.push( intersection );
 		}
 	}
@@ -139,9 +138,9 @@ fvec scene::get_intersection_color(
 
 fvec scene::get_surface_color( const ray_intersection &r ) const {
 	fvec surface_color( 4 );
-	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.01;
-	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.01;
-	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.01;
+	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.3;
+	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.3;
+	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.3;
 	surface_color( 3 ) = 1.0;
 
 	fvec intensity( r.to_render->get_color() );
@@ -165,27 +164,25 @@ fvec scene::get_surface_color( const ray_intersection &r ) const {
 
 		double dot_light_norm = dot( direction_light_source, r.get_normal() );
 
-		// If the light is in front of the surface, apply lighting
-		if ( !has_shadow && dot_light_norm > 0 ) {
+		if ( dot_light_norm > 0 ) {
 
-			vec reflected =  (r.get_normal() * 2 * dot_light_norm) - direction_light_source;
-			double dot_reflection_rayslope = dot( reflected, r.get_source_ray().get_slope() );
-
-			// get RGB values from diffuse/specular
+			// add up light values
 			for ( int k = 0; k < 3; k++ ) {
 
-				// specular contributions
-				if(dot_reflection_rayslope > 0){
-					surface_color( k ) +=
-						(intensity( k ) *
-						r.to_render->get_specular()( k ) *
-						pow( dot_reflection_rayslope, r.to_render->get_specular_exponent() ));
-				}
+				if( !has_shadow )
+				{
+					// ambient
+					surface_color(k) += 0.2 * r.to_render->get_color()(k);
 
-				// diffuse contributions
-				surface_color( k ) +=
-					intensity( k ) * dot_light_norm *
-					r.to_render->get_color()( k );
+					// specular
+					surface_color(k) += r.to_render->get_specular()(k) *
+									pow(max(dot(direction_light_source,
+									r.get_source_ray().get_point()), 0.0),
+									r.to_render->get_specular_exponent() );
+
+					// diffuse
+					surface_color(k) += lights.at(i)->get_diffuse() * r.to_render->get_diffuse();
+				}
 
 			}
 		}
