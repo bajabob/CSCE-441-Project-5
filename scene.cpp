@@ -121,22 +121,15 @@ fvec scene::get_intersection_color(
 
 	fvec surface_color;
 	surface_color.zeros( 4 );
-	int total_rays = rays.size();
 
-	// add up all the colors from the various intersections
-	while (!rays.empty()) {
-		ray_intersection r = rays.top();
-		surface_color += (get_surface_color( r ));
-		rays.pop();
-	}
-
-	// take average of all colors
-	surface_color /= (double) total_rays;
+	// get the closest intersected object
+	ray_intersection r = rays.top();
+	surface_color += (get_surface_color( r, 1 ));
 
 	return surface_color;
 }
 
-fvec scene::get_surface_color( const ray_intersection &r ) const {
+fvec scene::get_surface_color( const ray_intersection &r, int reflections ) const {
 	fvec surface_color( 4 );
 	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.3;
 	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.3;
@@ -166,25 +159,39 @@ fvec scene::get_surface_color( const ray_intersection &r ) const {
 
 		if ( dot_light_norm > 0 ) {
 
+			vec specular(2*dot(r.get_normal(), direction_light_source)
+							* r.get_normal() - direction_light_source);
+
 			// add up light values
 			for ( int k = 0; k < 3; k++ ) {
 
+				// ambient
+				surface_color(k) += lights.at(i)->get_color()(k)
+										* r.to_render->get_color()(k);
+
 				if( !has_shadow )
 				{
-					// ambient
+					// fill non-shadows
 					surface_color(k) += 0.2 * r.to_render->get_color()(k);
 
 					// specular
-					surface_color(k) += r.to_render->get_specular()(k) *
-									pow(max(dot(direction_light_source,
-									r.get_source_ray().get_point()), 0.0),
-									r.to_render->get_specular_exponent() );
+					surface_color(k) += r.to_render->get_specular()(k)
+											* lights.at(i)->get_color()(k) *
+											pow(max(dot(specular, direction), 0.0), 1.0);
 
 					// diffuse
-					surface_color(k) += lights.at(i)->get_diffuse() * r.to_render->get_diffuse();
+					surface_color(k) += lights.at(i)->get_diffuse()
+											* r.to_render->get_diffuse()
+											* max(dot(specular, r.get_normal()), 0.0);
 				}
 
 			}
+		}
+
+		if(reflections > 0){
+//			ray reflect(r.get_source_ray().get_slope() + r.get_normal(), 2*dot(r.get_source_ray().get_slope(), r.get_normal())*r.get_normal() - r.get_source_ray().get_slope());
+//			priority_queue<ray_intersection> reflect_rays = get_ray_intersections(reflect);
+//			surface_color += 1.0 * get_surface_color(reflect_rays.top(), reflections-1);
 		}
 
 	}

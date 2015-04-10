@@ -57,19 +57,20 @@ void onRenderSceneOne()
 					0.0, 1.0);
 	scene.add_surface(&plane);
 
+
 	// lights
-	light light_forward(vec("0 0 18"),
-						fvec("0.5 0.5 0.5"),
+	light light_forward(vec("-10 0 18"),
+						fvec("0.0 0.0 0.5"),
 						0.2);
 	scene.add_light(&light_forward);
 
 	light light_back_left(	vec("18 -6 18"),
-							fvec("0.5 0.5 0.0"),
+							fvec("0.5 0.0 0.0"),
 							0.0);
 	scene.add_light(&light_back_left);
 
 	light light_back_right(	vec("18 6 18"),
-							fvec("0.5 0.5 0.0"),
+							fvec("0.0 0.5 0.0"),
 							0.0);
 	scene.add_light(&light_back_right);
 
@@ -84,8 +85,8 @@ void onRenderSceneOne()
 	sphere sphere_center_bottom(vec("-6 0 0"),
 								1.0,
 								fvec("1.0 0.0 0.0"),
-								fvec("1.0 1.0 1.0"),
-								6.0, 1.0);
+								fvec("0.2 0.2 0.2"),
+								1.0, 1.0);
 	scene.add_surface(&sphere_center_bottom);
 
 	sphere sphere_left(		vec("0 -7 0"),
@@ -107,6 +108,182 @@ void onRenderSceneOne()
     glutPostRedisplay();
 }
 
+void onRenderSceneTwo()
+{
+	onClearFramebuffer();
+
+	cout << "Rendering Scene 2... " << endl;
+
+	scene scene(vec("-18 0 3"));
+
+	// plane
+	plane plane(	vec("0 0 -5"),
+					vec("0 0 1"),
+					fvec("1.0 0.0 0.0"),
+					fvec("0.02 0.0 0.0"),
+					0.2, 0.2);
+	scene.add_surface(&plane);
+
+
+	// lights
+	light light1(	vec("40 0 18"),
+					fvec("0.01 0.01 0.01"),
+					1.0);
+	scene.add_light(&light1);
+
+	light light2(	vec("40 -16 18"),
+					fvec("0.01 0.01 0.01"),
+					1.0);
+	scene.add_light(&light2);
+
+	light light3(	vec("40 16 18"),
+					fvec("0.01 0.01 0.01"),
+					1.0);
+	scene.add_light(&light3);
+
+	// spheres
+	sphere sphere_center(	vec("0 0 0"),
+							4.0,
+							fvec("0.0 0.8 0.0"),
+							fvec("0.0 0.01 0.0"),
+							1.0, 1.0);
+	scene.add_surface(&sphere_center);
+
+
+	scene.render(framebuffer);
+
+    glutPostRedisplay();
+}
+
+void onRenderSceneThree()
+{
+	onClearFramebuffer();
+
+	cout << "Rendering Scene 3... " << endl;
+
+	scene scene(vec("-18 0 3"));
+
+	// plane
+	plane plane(	vec("0 0 -5"),
+					vec("0 0 1"),
+					fvec("0.0 0.0 0.8"),
+					fvec("0.0 0.0 0.0"),
+					0.0, 0.0);
+	scene.add_surface(&plane);
+
+
+	// lights
+	light light1(	vec("40 0 18"),
+					fvec("0.1 0.0 0.0"),
+					0.3);
+	scene.add_light(&light1);
+
+
+	// spheres
+	sphere sphere_center(	vec("0 0 0"),
+							4.0,
+							fvec("0.8 0.0 0.0"),
+							fvec("0.0 0.0 0.0"),
+							0.0, 1.0);
+	scene.add_surface(&sphere_center);
+
+
+	scene.render(framebuffer);
+
+    glutPostRedisplay();
+}
+
+void onRenderSceneFour()
+{
+	onClearFramebuffer();
+
+	cout << "Rendering Scene 4... " << endl;
+
+	scene scene(vec("-18 0 3"));
+
+	// plane
+	plane plane(	vec("0 0 -5"),
+					vec("0 0 1"),
+					fvec("0.0 0.0 0.8"),
+					fvec("0.0 0.0 0.0"),
+					0.0, 0.0);
+	scene.add_surface(&plane);
+
+
+	// lights
+	light light1(	vec("40 0 18"),
+					fvec("0.1 0.0 0.0"),
+					0.3);
+	scene.add_light(&light1);
+
+	light light2(	vec("-40 20 18"),
+					fvec("0.1 0.0 0.0"),
+					0.3);
+	scene.add_light(&light2);
+
+	light light3(	vec("-40 -20 18"),
+					fvec("0.1 0.0 0.0"),
+					0.3);
+	scene.add_light(&light3);
+
+
+	// spheres
+	sphere s1(	vec("0 -6 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s1);
+
+	sphere s2(	vec("0 -3 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s2);
+
+	sphere s3(	vec("0 0 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s3);
+
+	sphere s4(	vec("0 3 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s4);
+
+	sphere s5(	vec("0 6 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s5);
+
+	sphere s6(	vec("-6 6 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s6);
+
+	sphere s7(	vec("-6 -6 0"),
+				1.0,
+				fvec("0.8 0.0 0.0"),
+				fvec("0.0 0.0 0.0"),
+				0.0, 1.0);
+	scene.add_surface(&s7);
+
+
+	scene.render(framebuffer);
+
+    glutPostRedisplay();
+}
+
+
 void onKeyPress( unsigned char key, int x, int y ) {
 	switch ((char) key) {
 	case 'q':
@@ -118,6 +295,21 @@ void onKeyPress( unsigned char key, int x, int y ) {
 	case '1':
 		onClearFramebuffer();
 		onRenderSceneOne();
+		glutPostRedisplay();
+		break;
+	case '2':
+		onClearFramebuffer();
+		onRenderSceneTwo();
+		glutPostRedisplay();
+		break;
+	case '3':
+		onClearFramebuffer();
+		onRenderSceneThree();
+		glutPostRedisplay();
+		break;
+	case '4':
+		onClearFramebuffer();
+		onRenderSceneFour();
 		glutPostRedisplay();
 		break;
 	default:
@@ -142,9 +334,12 @@ int main(int argc, char **argv)
 
     cout << "Controls:" << endl;
     cout << "\t 'q' to quit" << endl;
-    cout << "\t '1' to render scene 1" << endl;
+    cout << "\t '1' to render plane & 4 objects" << endl;
+    cout << "\t '2' to render specular example" << endl;
+    cout << "\t '3' to render diffuse example" << endl;
+    cout << "\t '4' to render 8 objects" << endl;
 
-    onRenderSceneOne();
+    onRenderSceneFour();
 
     glutMainLoop();
     return 0;

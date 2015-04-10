@@ -43,7 +43,7 @@ public:
 
     bool operator<(const ray_intersection &ri) const
     {
-        return distance < ri.distance;
+        return distance > ri.distance;
     }
 
     /**

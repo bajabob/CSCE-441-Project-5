@@ -16,6 +16,8 @@ using std::set;
 #include <vector>
 using std::vector;
 
+using std::cout;
+using std::endl;
 using std::max;
 
 class scene;
@@ -42,7 +44,7 @@ public:
 
     fvec get_intersection_color(const priority_queue<ray_intersection> &pq) const;
 
-    fvec get_surface_color(const ray_intersection &r) const;
+    fvec get_surface_color(const ray_intersection &r, int reflections ) const;
 
     void add_surface(surface* s);
 
