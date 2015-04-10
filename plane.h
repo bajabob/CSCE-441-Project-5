@@ -12,9 +12,7 @@ class plane : public surface
 {
 public:
 	plane(const vec &point, const vec& normal,
-			const fvec &c, const fvec &s, const double &se,
-			const double &reflect, const double &refract,
-			const double &snell);
+			const fvec &c, const fvec &s, const double &se);
 
     virtual ray_intersection cast_ray(const ray &viewer) const;
 

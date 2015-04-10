@@ -4,11 +4,8 @@ plane::plane(const vec &point,
 			const vec &normal,
 			const fvec &c,
 			const fvec &s,
-			const double &se,
-			const double &reflect,
-			const double &refract,
-			const double &snell)
-: 	surface(c, s, se, reflect, refract, snell),
+			const double &se)
+: 	surface(c, s, se),
     point(point),
 	normal(normal / norm(normal, 2))
 {}

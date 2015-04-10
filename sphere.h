@@ -18,9 +18,7 @@ class sphere : public surface {
 public:
 
 	sphere(const vec &position, const double &radius,
-			const fvec &c, const fvec &s, const double &se,
-			const double &reflect, const double &refract,
-			const double &snell);
+			const fvec &c, const fvec &s, const double &se);
 
 	virtual ray_intersection cast_ray(const ray &viewer) const;
 

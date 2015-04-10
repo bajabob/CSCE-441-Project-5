@@ -1,7 +1,6 @@
-
 #include "scene.h"
 
-fvec scene::BACKGROUND = fvec("0 0 0 1");
+fvec scene::BACKGROUND = fvec( "0 0 0 1" );
 
 mat cross_product_matrix( const vec &in ) {
 	// init cross-product
@@ -35,12 +34,9 @@ mat rotation_matrix( const vec &a, double angle ) {
 	return rm;
 }
 
-scene::scene(const vec &camera):
-		camera_width(3),
-		camera_height(3),
-		camera_center(3),
-		camera_slope(3)
-{
+scene::scene( const vec &camera ) :
+		camera_width( 3 ), camera_height( 3 ), camera_center( 3 ), camera_slope(
+				3 ) {
 	camera_center = camera;
 
 	float x = 0.9285;
@@ -48,182 +44,164 @@ scene::scene(const vec &camera):
 	float z = -0.3714;
 	float angle = 1.5;
 
-	camera_slope(0) = x;
-	camera_slope(1) = y;
-	camera_slope(2) = z;
+	camera_slope( 0 ) = x;
+	camera_slope( 1 ) = y;
+	camera_slope( 2 ) = z;
 
-	vec camera_up(3);
-	camera_up(0) = -z;
-	camera_up(1) = y;
-	camera_up(2) = x;
+	vec camera_up( 3 );
+	camera_up( 0 ) = -z;
+	camera_up( 1 ) = y;
+	camera_up( 2 ) = x;
 
-	vec y_cross(3);
-	y_cross(0) = 0;
-	y_cross(1) = -1;
-	y_cross(2) = 0;
+	vec y_cross( 3 );
+	y_cross( 0 ) = 0;
+	y_cross( 1 ) = -1;
+	y_cross( 2 ) = 0;
 
-	camera_width = (rotation_matrix(camera_up, -angle/2.0) * camera_slope) -
-			(rotation_matrix(camera_up, angle/2.0) * camera_slope);
-	camera_height = (rotation_matrix(y_cross, -angle/2.0) * camera_slope) -
-			(rotation_matrix(y_cross, angle/2.0) * camera_slope);
+	camera_width = (rotation_matrix( camera_up, -angle / 2.0 ) * camera_slope)
+			- (rotation_matrix( camera_up, angle / 2.0 ) * camera_slope);
+	camera_height = (rotation_matrix( y_cross, -angle / 2.0 ) * camera_slope)
+			- (rotation_matrix( y_cross, angle / 2.0 ) * camera_slope);
 }
 
-void scene::render( float (&framebuffer)[HEIGHT][WIDTH][3])
-{
-	for(int x = 0; x < WIDTH; x++)
-    {
-		for(int y = 0; y < HEIGHT; y++)
-        {
+void scene::render( float (&framebuffer)[HEIGHT][WIDTH][3] ) {
+	for ( int x = 0; x < WIDTH; x++ ) {
+		for ( int y = 0; y < HEIGHT; y++ ) {
 			// calculate the camera ray vector
-        	vec comp = ((-(y - HEIGHT/2.0) / HEIGHT * camera_height) +
-        				(-(x - WIDTH/2.0) / WIDTH * camera_width)) +
-        				camera_slope;
+			vec comp = ((-(y - HEIGHT / 2.0) / HEIGHT * camera_height)
+					+ (-(x - WIDTH / 2.0) / WIDTH * camera_width))
+					+ camera_slope;
 
-        	// create a new ray based off the camera position and current x/y
-        	ray r(camera_center, (comp / norm(comp, 2)));
+			// create a new ray based off the camera position and current x/y
+			ray r( camera_center, (comp / norm( comp, 2 )) );
 
-        	// get all colors of the discovered ray intersections
-            fvec points = get_intersection_color(get_ray_intersections(r));
+			// get all colors of the discovered ray intersections
+			fvec points = get_intersection_color( get_ray_intersections( r ) );
 
-            // assign discovered intersection colors
-            framebuffer[y][x][0] = points(0);
-            framebuffer[y][x][1] = points(1);
-            framebuffer[y][x][2] = points(2);
+			// assign discovered intersection colors
+			framebuffer[y][x][0] = points( 0 );
+			framebuffer[y][x][1] = points( 1 );
+			framebuffer[y][x][2] = points( 2 );
 
-        }
-    }
+		}
+	}
 }
 
+priority_queue<ray_intersection> scene::get_ray_intersections( const ray &r ) const {
+	priority_queue<ray_intersection> pq;
 
-priority_queue<ray_intersection> scene::get_ray_intersections(const ray &r) const
-{
-    priority_queue<ray_intersection> pq;
+	// go through the list of rendering objects
+	for ( int i = 0; i < surfaces.size(); ++i ) {
+		ray_intersection intersection = surfaces.at( i )->cast_ray( r );
 
-    // go through the list of rendering objects
-    for(int i = 0; i < surfaces.size(); ++i)
-    {
-    	ray_intersection intersection = surfaces.at(i)->cast_ray(r);
+		// only add as an intersection IF less than the MAX render distance
+		if (intersection.get_distance() > 0 ) {
+			pq.push( intersection );
+		}
+	}
 
-    	// only add as an intersection IF less than the MAX render distance
-    	if(intersection.get_distance() < MAX_RENDER_DISTANCE && intersection.get_distance() > 0){
-    		pq.push(intersection);
-    	}
-    }
+	// no intersections?
+	if ( pq.empty() ) {
+		return (priority_queue<ray_intersection>());
+	}
 
-    // no intersections?
-    if(pq.empty())
-    {
-        return (priority_queue<ray_intersection>());
-    }
-
-    // provide list of intersections in order of ray-trace
-    return (priority_queue<ray_intersection>(pq));
+	// provide list of intersections in order of ray-trace
+	return (priority_queue<ray_intersection>( pq ));
 }
 
-fvec scene::get_intersection_color(const priority_queue<ray_intersection> &pq) const
-{
+fvec scene::get_intersection_color(
+		const priority_queue<ray_intersection> &pq ) const {
 
 	// no intersection found, report back the default background color
-	if(pq.size() == 0)
-	{
+	if ( pq.size() == 0 ) {
 		return BACKGROUND;
 	}
 
-	priority_queue<ray_intersection> rays(pq);
-
-	int total_rays = rays.size();
+	priority_queue<ray_intersection> rays( pq );
 
 	fvec surface_color;
-	surface_color.zeros(4);
+	surface_color.zeros( 4 );
+	int total_rays = rays.size();
 
 	// add up all the colors from the various intersections
-	while(!rays.empty())
-	{
+	while (!rays.empty()) {
 		ray_intersection r = rays.top();
-		surface_color += (get_surface_color(r));
+		surface_color += (get_surface_color( r ));
 		rays.pop();
 	}
 
 	// take average of all colors
 	surface_color /= (double) total_rays;
 
-    return surface_color;
+	return surface_color;
 }
 
+fvec scene::get_surface_color( const ray_intersection &r ) const {
+	fvec surface_color( 4 );
+	surface_color( 0 ) = r.to_render->get_color()( 0 ) * 0.3;
+	surface_color( 1 ) = r.to_render->get_color()( 1 ) * 0.3;
+	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.3;
+	surface_color( 3 ) = 1.0;
 
-fvec scene::get_surface_color(const ray_intersection &r) const
-   {
-       fvec surface_color(4);
-       surface_color(0) = r.to_render->get_color()(0)*0.2;
-       surface_color(1) = r.to_render->get_color()(1)*0.2;
-       surface_color(2) = r.to_render->get_color()(2)*0.2;
-       surface_color(3) = 1.0;
+	fvec intensity( r.to_render->get_color() );
 
-       for(int i = 0; i < lights.size(); i++)
-       {
+	for ( int i = 0; i < lights.size(); i++ ) {
 
-       	double distance = norm(lights.at(i)->get_position() - r.get_point(), 2);
+		// setup lighting calculations
+		vec direction( lights.at( i )->get_position() - r.get_point() );
+		vec direction_light_source( direction / norm( direction, 2 ) );
+		double distance_to_light = norm(
+				lights.at( i )->get_position() - r.get_point(), 2 );
 
-       	fvec intensity(r.to_render->get_color());
+		// Detect if casted ray is a shadow
+		bool has_shadow = false;
+		priority_queue<ray_intersection> shadow_rays = get_ray_intersections(
+						ray( r.get_point() + r.get_normal(), direction_light_source ) );
+		if ( !shadow_rays.empty()
+				&& distance_to_light > shadow_rays.top().get_distance() ) {
+			has_shadow = true;
+		}
 
-       	if(distance < 15.0){
-       		intensity = 225.0 * r.to_render->get_color() / pow(distance, 2);
-       	}
+		double dot_light_norm = dot( direction_light_source, r.get_normal() );
 
-       	vec direction(lights.at(i)->get_position() - r.get_point());
-       	vec direction_light_source(direction / norm(direction, 2));
-       	double distance_to_light = norm(lights.at(i)->get_position() - r.get_point(), 2);
+		// If the light is in front of the surface, apply lighting
+		if ( !has_shadow && dot_light_norm > 0 ) {
 
-       	ray ray_to_light(r.get_point() + r.get_normal() * 0.05, direction_light_source);
-       	priority_queue<ray_intersection> shad_cast = get_ray_intersections(ray_to_light);
+			vec reflected =  (r.get_normal() * 2 * dot_light_norm) - direction_light_source;
+			double dot_reflection_rayslope = dot( reflected, r.get_source_ray().get_slope() );
 
-       	bool has_shadow = false;
-       	if(!shad_cast.empty() && shad_cast.top().get_distance() < distance_to_light){
-       		has_shadow = true;
-       	}
+			// get RGB values from diffuse/specular
+			for ( int k = 0; k < 3; k++ ) {
 
-       	double dot_ln = dot(direction_light_source, r.get_normal());
-
-       	vec reflected = 2*dot_ln*r.get_normal() - direction_light_source;
-
-			double dot_rv = dot(reflected, r.get_source_ray().get_slope());
-
-
-			// If the light is in front of the surface, apply lighting
-			if(dot_ln >= 0.0 && !has_shadow)
-			{
-				for(int channel = 0; channel < 3; channel++)
-				{
-					// Add in diffuse term
-					surface_color(channel)
-						+= r.to_render->get_color()(channel)*dot_ln*intensity(channel);
-
-					// Add in specular term
-					if(dot_rv >= 0.0)
-					{
-						surface_color(channel)
-							+= r.to_render->get_specular()(channel)
-							* pow(dot_rv, r.to_render->get_specular_exponent())
-							* intensity(channel);
-					}
+				// specular contributions
+				if(dot_reflection_rayslope > 0){
+					surface_color( k ) +=
+						(intensity( k ) *
+						r.to_render->get_specular()( k ) *
+						pow( dot_reflection_rayslope, r.to_render->get_specular_exponent() ));
 				}
+
+				// diffuse contributions
+				surface_color( k ) +=
+					intensity( k ) * dot_light_norm *
+					r.to_render->get_color()( k );
+
 			}
-       }
+		}
+	}
 
-       return surface_color;
+	return surface_color;
 
-   }
-
-void scene::add_surface(surface* s)
-{
-	this->surfaces.push_back(s);
 }
 
-void scene::add_light(light* l)
-{
-	this->lights.push_back(l);
+void scene::add_surface( surface* s ) {
+	this->surfaces.push_back( s );
 }
 
-vector<light*> scene::get_lights() const{
+void scene::add_light( light* l ) {
+	this->lights.push_back( l );
+}
+
+vector<light*> scene::get_lights() const {
 	return this->lights;
 }

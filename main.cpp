@@ -50,26 +50,44 @@ void onRenderSceneOne()
 	scene scene(vec("-18 0 3"));
 
 	// lights
-	light light(	vec("5 3 20"),
-					fvec("1 1 1"));
-	scene.add_light(&light);
+	light light_forward(	vec("0 0 18"),
+							fvec("0.5 0.5 0.5"));
+	scene.add_light(&light_forward);
+
+	light light_back(	vec("10 0 18"),
+						fvec("0.5 0.5 0.5"));
+	scene.add_light(&light_back);
+
 
 	// plane
 	plane plane(	vec("0 0 -5"),
 					vec("0 0 1"),
 					fvec("0.7 0.3 0.1"),
-					fvec("0.2 0.7 0.1"),
-					12.0, 0.0, 0.0, 3.0);
+					fvec("0.7 0.3 0.1"),
+					0.4);
 	scene.add_surface(&plane);
 
 	// spheres
-	sphere sphere(	vec("0 0 0"),
-					1.0,
-					fvec("0.1 0.8 0.1"),
-					fvec("0.2 0.7 0.1"),
-					12.0, 0.0, 0.0, 3.0);
+	sphere sphere_center(	vec("0 0 4"),
+							1.0,
+							fvec("0.0 1.0 0.0"),
+							fvec("0.0 0.0 0.0"),
+							0.0);
+	scene.add_surface(&sphere_center);
 
-	scene.add_surface(&sphere);
+	sphere sphere_left(		vec("0 -5 0"),
+							2.0,
+							fvec("0.0 0.0 1.0"),
+							fvec("1.0 1.0 1.0"),
+							1.0);
+	scene.add_surface(&sphere_left);
+
+	sphere sphere_right(	vec("0 5 0"),
+							2.0,
+							fvec("0.0 0.0 1.0"),
+							fvec("1.0 1.0 1.0"),
+							1.0);
+	scene.add_surface(&sphere_right);
 
 	scene.render(framebuffer);
 

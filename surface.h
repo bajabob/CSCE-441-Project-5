@@ -26,16 +26,10 @@ public:
 
 	surface(const fvec &color,
 			const fvec &specular,
-			const double &specular_exponent,
-			const double &reflect_intersections,
-			const double &refract_intersections,
-			const double &snell_coeffiecant):
+			const double &specular_exponent):
 				color(color),
 				specular(specular),
-				specular_exponent(specular_exponent),
-				reflect_intersections(reflect_intersections),
-				refract_intersections(refract_intersections),
-				snell_coefficient(snell_coefficient)
+				specular_exponent(specular_exponent)
 	{}
 
 	/**
@@ -61,11 +55,7 @@ private:
 
     fvec color;
     fvec specular;
-
     double specular_exponent;
-    double reflect_intersections;
-    double refract_intersections;
-    double snell_coefficient;
 
 };
 
