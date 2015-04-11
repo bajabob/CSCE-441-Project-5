@@ -7,9 +7,9 @@ using std::sqrt;
 
 #include <armadillo>
 using arma::vec;
-using arma::fvec;
-using arma::norm;
 using arma::dot;
+using arma::norm;
+using arma::fvec;
 using arma::norm;
 
 #include "surface.h"

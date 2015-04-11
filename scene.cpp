@@ -2,7 +2,7 @@
 
 fvec scene::BACKGROUND = fvec( "0 0 0 1" );
 
-mat cross_product_matrix( const vec &in ) {
+mat rotation_matrix( const vec &a, double angle ) {
 	// init cross-product
 	mat cp( 3, 3 );
 
@@ -10,27 +10,22 @@ mat cross_product_matrix( const vec &in ) {
 	cp.zeros( 3, 3 );
 
 	// calculate
-	cp( 0, 1 ) = -in( 2 );
-	cp( 0, 2 ) = in( 1 );
-	cp( 1, 0 ) = in( 2 );
-	cp( 1, 2 ) = -in( 0 );
-	cp( 2, 0 ) = -in( 1 );
-	cp( 2, 1 ) = in( 0 );
+	cp( 0, 1 ) = -a( 2 );
+	cp( 1, 2 ) = -a( 0 );
+	cp( 2, 0 ) = -a( 1 );
+	cp( 0, 2 ) = a( 1 );
+	cp( 1, 0 ) = a( 2 );
+	cp( 2, 1 ) = a( 0 );
 
-	return cp;
-}
-
-mat rotation_matrix( const vec &a, double angle ) {
-	vec na = a / norm( a, 2 );
-
+	vec na(a);
 	// create a new rotation matrix
 	mat rm( 3, 3 );
 	// zero out the response
 	rm.zeros( 3, 3 );
 	// calculate rotation matrix
-	rm = (1 - cos( angle )) * na * na.t()
-			+ sin( angle ) * cross_product_matrix( na )
-			+ eye( 3, 3 ) * cos( angle );
+	rm = (	cos( angle ) * eye( 3, 3 )
+			+ 1 - cos( angle )) * a * a.t()
+			+ sin( angle ) * cp;
 	return rm;
 }
 
@@ -136,8 +131,6 @@ fvec scene::get_surface_color( const ray_intersection &r, int reflections ) cons
 	surface_color( 2 ) = r.to_render->get_color()( 2 ) * 0.3;
 	surface_color( 3 ) = 1.0;
 
-	fvec intensity( r.to_render->get_color() );
-
 	for ( int i = 0; i < lights.size(); i++ ) {
 
 		// setup lighting calculations
@@ -150,8 +143,7 @@ fvec scene::get_surface_color( const ray_intersection &r, int reflections ) cons
 		bool has_shadow = false;
 		priority_queue<ray_intersection> shadow_rays = get_ray_intersections(
 						ray( r.get_point() + r.get_normal(), direction_light_source ) );
-		if ( !shadow_rays.empty()
-				&& distance_to_light > shadow_rays.top().get_distance() ) {
+		if ( !shadow_rays.empty() && distance_to_light > shadow_rays.top().get_distance() ) {
 			has_shadow = true;
 		}
 
@@ -184,16 +176,8 @@ fvec scene::get_surface_color( const ray_intersection &r, int reflections ) cons
 											* r.to_render->get_diffuse()
 											* max(dot(specular, r.get_normal()), 0.0);
 				}
-
 			}
 		}
-
-		if(reflections > 0){
-//			ray reflect(r.get_source_ray().get_slope() + r.get_normal(), 2*dot(r.get_source_ray().get_slope(), r.get_normal())*r.get_normal() - r.get_source_ray().get_slope());
-//			priority_queue<ray_intersection> reflect_rays = get_ray_intersections(reflect);
-//			surface_color += 1.0 * get_surface_color(reflect_rays.top(), reflections-1);
-		}
-
 	}
 
 	return surface_color;

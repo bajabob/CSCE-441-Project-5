@@ -4,8 +4,8 @@
 
 #include <armadillo>
 using arma::fvec;
-using arma::mat;
 using arma::eye;
+using arma::mat;
 
 #include <queue>
 using std::priority_queue;

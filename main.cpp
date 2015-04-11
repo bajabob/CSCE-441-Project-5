@@ -53,8 +53,8 @@ void onRenderSceneOne()
 	plane plane(	vec("0 0 -5"),
 					vec("0 0 1"),
 					fvec("0.3 0.3 0.3"),
-					fvec("0.0 0.0 0.0"),
-					0.0, 1.0);
+					fvec("0.01 0.01 0.01"),
+					1.0, 0.0);
 	scene.add_surface(&plane);
 
 
@@ -75,7 +75,7 @@ void onRenderSceneOne()
 	scene.add_light(&light_back_right);
 
 	// spheres
-	sphere sphere_center(	vec("0 0 4"),
+	sphere sphere_center(	vec("6 0 1"),
 							1.0,
 							fvec("0.0 0.8 0.0"),
 							fvec("0.0 0.0 0.0"),
@@ -120,7 +120,7 @@ void onRenderSceneTwo()
 	plane plane(	vec("0 0 -5"),
 					vec("0 0 1"),
 					fvec("1.0 0.0 0.0"),
-					fvec("0.02 0.0 0.0"),
+					fvec("0.02 0.02 0.02"),
 					0.2, 0.2);
 	scene.add_surface(&plane);
 
@@ -167,8 +167,8 @@ void onRenderSceneThree()
 	plane plane(	vec("0 0 -5"),
 					vec("0 0 1"),
 					fvec("0.0 0.0 0.8"),
-					fvec("0.0 0.0 0.0"),
-					0.0, 0.0);
+					fvec("0.01 0.01 0.01"),
+					1.0, 0.0);
 	scene.add_surface(&plane);
 
 
@@ -204,77 +204,78 @@ void onRenderSceneFour()
 	// plane
 	plane plane(	vec("0 0 -5"),
 					vec("0 0 1"),
-					fvec("0.0 0.0 0.8"),
-					fvec("0.0 0.0 0.0"),
-					0.0, 0.0);
+					fvec("0.3 0.3 0.3"),
+					fvec("0.01 0.01 0.01"),
+					1.0, 0.0);
 	scene.add_surface(&plane);
 
 
 	// lights
-	light light1(	vec("40 0 18"),
-					fvec("0.1 0.0 0.0"),
-					0.3);
-	scene.add_light(&light1);
+	light light_forward(vec("-10 0 18"),
+						fvec("0.0 0.0 0.5"),
+						0.2);
+	scene.add_light(&light_forward);
 
-	light light2(	vec("-40 20 18"),
-					fvec("0.1 0.0 0.0"),
-					0.3);
-	scene.add_light(&light2);
+	light light_back_left(	vec("18 -6 18"),
+							fvec("0.5 0.0 0.0"),
+							0.0);
+	scene.add_light(&light_back_left);
 
-	light light3(	vec("-40 -20 18"),
-					fvec("0.1 0.0 0.0"),
-					0.3);
-	scene.add_light(&light3);
+	light light_back_right(	vec("18 6 18"),
+							fvec("0.0 0.5 0.0"),
+							0.0);
+	scene.add_light(&light_back_right);
+
 
 
 	// spheres
 	sphere s1(	vec("0 -6 0"),
 				1.0,
-				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.0 0.0 0.2"),
+				fvec("0.0 0.0 0.02"),
+				0.0, 0.0);
 	scene.add_surface(&s1);
 
 	sphere s2(	vec("0 -3 0"),
 				1.0,
-				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.2 0.0 0.0"),
+				fvec("0.02 0.0 0.0"),
+				0.0, 0.0);
 	scene.add_surface(&s2);
 
 	sphere s3(	vec("0 0 0"),
 				1.0,
-				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.0 0.2 0.0"),
+				fvec("0.0 0.01 0.0"),
+				0.0, 0.0);
 	scene.add_surface(&s3);
 
 	sphere s4(	vec("0 3 0"),
 				1.0,
-				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.2 0.0 0.0"),
+				fvec("0.02 0.0 0.0"),
+				0.0, 0.0);
 	scene.add_surface(&s4);
 
 	sphere s5(	vec("0 6 0"),
 				1.0,
-				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.0 0.0 0.2"),
+				fvec("0.0 0.0 0.02"),
+				0.0, 0.0);
 	scene.add_surface(&s5);
 
 	sphere s6(	vec("-6 6 0"),
 				1.0,
 				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.02 0.0 0.0"),
+				1.0, 0.0);
 	scene.add_surface(&s6);
 
 	sphere s7(	vec("-6 -6 0"),
 				1.0,
 				fvec("0.8 0.0 0.0"),
-				fvec("0.0 0.0 0.0"),
-				0.0, 1.0);
+				fvec("0.02 0.0 0.0"),
+				1.0, 0.0);
 	scene.add_surface(&s7);
 
 
@@ -339,7 +340,7 @@ int main(int argc, char **argv)
     cout << "\t '3' to render diffuse example" << endl;
     cout << "\t '4' to render 8 objects" << endl;
 
-    onRenderSceneFour();
+    onRenderSceneOne();
 
     glutMainLoop();
     return 0;
