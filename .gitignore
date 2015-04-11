@@ -7,3 +7,4 @@ Debug/
 cmake_install.cmake
 main
 Makefile
+.settings/
