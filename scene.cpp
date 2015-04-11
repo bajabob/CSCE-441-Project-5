@@ -9,19 +9,18 @@ mat rotation_matrix( const vec &a, double angle ) {
 	// zero out the response
 	cp.zeros( 3, 3 );
 
-	// calculate
+	vec na(a);
+	// create a new rotation matrix
+	mat rm( 3, 3 );
+	// zero out the response
+	rm.zeros( 3, 3 );
+	// calculate cp
 	cp( 0, 1 ) = -a( 2 );
 	cp( 1, 2 ) = -a( 0 );
 	cp( 2, 0 ) = -a( 1 );
 	cp( 0, 2 ) = a( 1 );
 	cp( 1, 0 ) = a( 2 );
 	cp( 2, 1 ) = a( 0 );
-
-	vec na(a);
-	// create a new rotation matrix
-	mat rm( 3, 3 );
-	// zero out the response
-	rm.zeros( 3, 3 );
 	// calculate rotation matrix
 	rm = (	cos( angle ) * eye( 3, 3 )
 			+ 1 - cos( angle )) * a * a.t()

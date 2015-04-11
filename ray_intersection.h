@@ -13,14 +13,14 @@ public:
 
 	ray_intersection(){}
 
-	ray_intersection(const vec &normal,
+	ray_intersection(const surface *to_render,
+					const vec &normal,
 					const ray &source_ray,
-					const double &distance,
-					const surface *to_render):
+					const double &distance):
+	to_render(to_render),
 	normal(normal),
 	source_ray(source_ray),
-	distance(distance),
-	to_render(to_render)
+	distance(distance)
 	{
 		this->point = source_ray.calculate(this->distance);
 	}

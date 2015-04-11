@@ -22,7 +22,7 @@ ray_intersection plane::shoot_ray(const ray &r) const
 	 */
 	double distance = dot(normal, point - r.get_point())
                            / dot(normal, r.get_slope());
-	ray_intersection ri(normal, r, distance, this);
+	ray_intersection ri(this, normal, r, distance);
 
     return ri;
 }

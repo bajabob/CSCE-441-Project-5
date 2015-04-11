@@ -26,5 +26,5 @@ ray_intersection sphere::shoot_ray(const ray &r) const
 
     vec n((2*pos - 2*position) / norm(vec(2*pos - 2*position), 2));
 
-    return ray_intersection(n, r, distance, this);
+    return ray_intersection(this, n, r, distance);
 }
