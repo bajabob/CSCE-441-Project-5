@@ -1,6 +1,6 @@
 
-#ifndef RAY
-#define RAY
+#ifndef RAY_H_
+#define RAY_H_
 
 #include <armadillo>
 using arma::vec;

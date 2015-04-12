@@ -1,6 +1,6 @@
 
-#ifndef SCENE
-#define SCENE
+#ifndef SCENE_H_
+#define SCENE_H_
 
 #include <armadillo>
 using arma::fvec;

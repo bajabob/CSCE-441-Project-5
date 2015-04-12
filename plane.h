@@ -1,6 +1,6 @@
 
-#ifndef INFINITE_PLANE
-#define INFINITE_PLANE
+#ifndef PLANE_H_
+#define PLANE_H_
 
 #include <armadillo>
 using arma::vec;

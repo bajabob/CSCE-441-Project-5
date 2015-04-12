@@ -1,6 +1,6 @@
 
-#ifndef RENDERABLE
-#define RENDERABLE
+#ifndef SURFACE_H_
+#define SURFACE_H_
 
 #include <queue>
 using std::priority_queue;
